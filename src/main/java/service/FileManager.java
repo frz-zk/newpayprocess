@@ -5,6 +5,8 @@
  */
 package service;
 
+import myException.myexceptio;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -58,8 +60,11 @@ public class FileManager {
         fr.close();
     }
 
-    public String[] openfile() throws IOException {
-        FileReader fr = new FileReader(path);
+    public String[] openfile() throws IOException, myexceptio {
+        if (!Files.exists(Paths.get(path))){
+            throw new myException.myexceptio(" not foud file ");
+        }
+            FileReader fr = new FileReader(path);
         BufferedReader textreader = new BufferedReader(fr);
 
         int numberOfLines = readLines();

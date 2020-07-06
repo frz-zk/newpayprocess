@@ -71,7 +71,7 @@ public class Inventory {
         this.Amount = amount;
     }
 
-    public void CheckToseeisInventoryeEough( String[]inventoryLines , List<Payment> payments) {
+    public void CheckToseeisInventoryeEough( String[]inventoryLines , List<Payment> payments) throws myexceptio {
         List<Inventory> inventories = readInventoriesFromFile(inventoryLines);
         for (Inventory inventory : inventories) {
             BigDecimal totalDebt = new BigDecimal(0);
@@ -80,13 +80,11 @@ public class Inventory {
                     totalDebt = totalDebt.add(pay.getAmount());
                 }
             }
-            try {
+
                 if (inventory.getAmount().compareTo(totalDebt) < 0) {
                     throw new myexceptio("The account balance is not enough");
                 }
-            } catch (myexceptio myexception) {
-                myexception.printStackTrace();
-            }
+
         }
 
     }
