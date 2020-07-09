@@ -4,114 +4,58 @@ import myException.myexceptio;
 import service.FileManager;
 import service.Inventory;
 import service.Payment;
-import service.Transaction;
+import service.service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import static service.Inventory.getInventoryText;
-import static service.Transaction.getTransactionText;
-
 
 public class main {
     static Logger logger = Logger.getLogger("loggerPay");
 
-    public static void main(String[] args) throws myexceptio, IOException {
-       try {
-           Payment payment = new Payment();
-           Transaction transaction = new Transaction();
-           Inventory inventoryy = new Inventory();
+    public static void main(String[] args) throws Exception {
 
-           FileHandler handlerfile = null;
-           handlerfile = new FileHandler("src\\main\\java\\resource\\filehandler.txt");
+        FileHandler handlerfile = null;
+        handlerfile = new FileHandler("src\\main\\java\\resource\\filehandler.txt");
 
-           SimpleFormatter formatter = new SimpleFormatter();
-           handlerfile.setFormatter(formatter);
-           logger.setLevel(Level.ALL);
-           logger.addHandler(handlerfile);
-           logger.entering("Paymentpr", "main");
+        SimpleFormatter formatter = new SimpleFormatter();
+        handlerfile.setFormatter(formatter);
+        logger.setLevel(Level.ALL);
+        logger.addHandler(handlerfile);
+        logger.entering("Paymentpr", "main");
+
+        String paymentpath = "src\\main\\java\\resource\\payment.txt";
+        String inventorypath = "src\\main\\java\\resource\\inventory.txt";
+        String transactionpath = "src\\main\\java\\resource\\transaction.txt";
+
+        FileManager paymentFile = new FileManager(paymentpath);
+        FileManager inventoryFile = new FileManager(inventorypath);
+        FileManager transactionFile = new FileManager(transactionpath);
+        service service = new service();
+
+        service.checkeExistencefil(paymentpath);
+         service.createDataPayment();
+        String detapay = service.convertDataPaymentTostring();
+        paymentFile.write(detapay, paymentpath);
 
 
-           FileManager paymentFile = new FileManager("src\\main\\java\\resource\\payment.txt");
-           FileManager inventoryFile = new FileManager("src\\main\\java\\resource\\inventory.txt");
-           FileManager transactionFile = new FileManager("src\\main\\java\\resource\\transaction.txt");
+        service.checkeExistencefil(inventorypath);
+         service.createDatainvantory();
+        String detainv = service.convertDataInventorytTostring();
+        inventoryFile.write(detainv, inventorypath);
 
-
-           String[] paymentLines = paymentFile.openfile();
-           List<Payment> payments = payment.readPaymentFromPaymentFile(paymentLines);
-           Payment deptorPayment = new Payment();
-           //Check if debt and credit are the same
-//        payment.CheckIfDebtAndCreditAreTheSame(payments, deptorPayment );
-           BigDecimal totalDebtorPayment = new BigDecimal(0);
-           BigDecimal totalCreditorPayment = new BigDecimal(0);
-
-           for (
-                   Payment pay : payments)
-               if (pay.getisDebtor()) {
-                   deptorPayment = pay;
-                   totalDebtorPayment = totalDebtorPayment.add(pay.getAmount());
-               } else {
-                   totalCreditorPayment = totalCreditorPayment.add(pay.getAmount());
-               }
-
-           if (totalCreditorPayment.compareTo(totalDebtorPayment) < 0) {
-               System.out.println("debt and credit are not the same!");
-               return;
-           }
-
-           String[] inventoryLines = inventoryFile.openfile();
-           List<Inventory> inventories = inventoryy.readInventoriesFromFile(inventoryLines);
-           inventoryy.CheckToseeisInventoryeEough(inventoryLines, payments);
-
-           //Now that everything is ok let's start proccess
-           //Update inventory and log transactions
-           List<Transaction> transactions = new ArrayList<>();
-           for (
-                   Payment pay : payments) {
-
-               for (Inventory inventory : inventories) {
-                   if (inventory.getAmount().compareTo(pay.getAmount()) >= 0) {
-                       if (pay.getisDebtor()) {
-                           inventory.decrease(pay.getAmount());
-
-                       } else {
-                           inventory.increase(pay.getAmount());
-                       }
-                   }
-               }
-
-               if (!pay.getisDebtor()) {
-//                Transaction transaction = new Transaction();
-
-                   transaction.setDebtorInventoryNumber(deptorPayment.getInventoryNumber());
-                   transaction.setCreditorInventoryNumber(pay.getInventoryNumber());
-                   transaction.setAmount(pay.getAmount());
-                   transactions.add(transaction);
-               }
-
-           }
-
-           String inventoryData = getInventoryText(inventories);
-           inventoryFile.overrideFile(inventoryData);
-
-           String transactionData = getTransactionText(transactions);
-           transactionFile.append(transactionData);
-
-       } catch (IOException e) {
-           e.printStackTrace();
-       } catch (SecurityException e) {
-           e.printStackTrace();
-       } catch (myException.myexceptio myexceptio) {
-           myexceptio.printStackTrace();
-       }  logger.exiting(" paymentpr", "main");
+        if (service.checkAccountInventorydebtor() == false) {
+            throw new myexceptio("The account balance is not enough");
+        }
+        service.finalPayments();
+        String datetransactionpath = service.convertTDataTransactionListTostring();
+        transactionFile.write(datetransactionpath, transactionpath);
     }
 }
+
+
+
 

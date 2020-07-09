@@ -1,3 +1,5 @@
-isdebtor	1.10.100.1	1000
-creditor	1.20.100.1	300
-creditor	1.20.100.2	700
+creditor	1.10.100.1	829
+creditor	1.10.100.2	829
+creditor	1.10.100.3	829
+debtor	1.10.100.4	2487
+
