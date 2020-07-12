@@ -1,4 +1,4 @@
-package service;
+package DTO;
 
 import java.math.BigDecimal;
 
@@ -15,7 +15,6 @@ public class Transaction {
     }
 
 
-
     public void setCreditorInventoryNumber(String creditorInventoryNumber) {
         this.creditorInventoryNumber = creditorInventoryNumber;
     }
@@ -28,7 +27,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return debtorInventoryNumber+ "\t" + creditorInventoryNumber + "\t" + Amount;
+        return debtorInventoryNumber + "\t" + creditorInventoryNumber + "\t" + Amount;
     }
 
 
