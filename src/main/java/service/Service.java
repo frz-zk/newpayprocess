@@ -4,6 +4,7 @@ import DTO.Inventory;
 import DTO.Payment;
 import DTO.Transaction;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -54,7 +55,7 @@ public class Service {
 
     public static void checkeExistencefile(String path) {
         if (!Files.exists(Paths.get(path))) {
-            FileManager.create(path);
+            create(path);
         }
     }
 
@@ -155,6 +156,11 @@ public class Service {
             transactionList.add(transaction);
 
         }
+    }
+
+    public static void create(String path) {
+        File file = new File(path);
+        file.getParentFile().mkdirs();
     }
 }
 
