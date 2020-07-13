@@ -9,9 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class service {
-    public service() {
+public class Service {
+    public Service() {
 
     }
 
@@ -20,7 +21,7 @@ public class service {
     public static List<Transaction> transactionList = new ArrayList<>();
 
 
-    public void createDataPayment() {
+    public static void createDataPayment() {
         BigDecimal total = new BigDecimal(0);
         int amount = (int) (Math.random() * 1000);
 
@@ -43,7 +44,7 @@ public class service {
         paymentList.add(debtorpayment);
     }
 
-    public String convertDataPaymentTostring() {
+    public static String convertDataPaymentTostring() {
         StringBuilder result = new StringBuilder();
         for (Payment pay : paymentList) {
             result.append(pay.toString()).append("\n");
@@ -51,20 +52,21 @@ public class service {
         return result.toString();
     }
 
-    public void checkeExistencefile(String path) {
+    public static void checkeExistencefile(String path) {
         if (!Files.exists(Paths.get(path))) {
             FileManager.create(path);
         }
     }
 
 
-    public void createDatainvantory() {
+    public static void createDatainvantory() {
         BigDecimal total = new BigDecimal(0);
         int amount = (int) (Math.random() * 1000);
 
 
         for (int i = 1; i <= 3; i++) {
-            Inventory inventory = new Inventory();
+            Inventory inventory;
+            inventory = new Inventory();
             inventory.setAmount(BigDecimal.valueOf(amount));
             total = total.add(inventory.getAmount());
             String deposit = "10.100.0." + i;
@@ -79,7 +81,7 @@ public class service {
         inventoryList.add(debtorininventory);
     }
 
-    public String convertDataInventorytTostring() {
+    public static String convertDataInventorytTostring() {
         StringBuilder result = new StringBuilder();
         for (Inventory inventory : inventoryList) {
             result.append(inventory.toString()).append("\n");
@@ -87,7 +89,7 @@ public class service {
         return result.toString();
     }
 
-    public Payment datadebtor() {
+    public static Payment datadebtor() {
         for (Payment payment : paymentList) {
             if (payment.getisDebtor()) {
                 return payment;
@@ -96,10 +98,10 @@ public class service {
         return null;
     }
 
-    public boolean checkAccountInventorydebtor() {
+    public static boolean checkAccountInventorydebtor() {
         for (Inventory inventory : inventoryList) {
-            if (inventory.getinventoryNumber().equals(datadebtor().getInventoryNumber())) {
-                if (inventory.getAmount().compareTo(datadebtor().getAmount()) >= 0) {
+            if (inventory.getinventoryNumber().equals(Objects.requireNonNull(datadebtor()).getInventoryNumber())) {
+                if (inventory.getAmount().compareTo(Objects.requireNonNull(datadebtor()).getAmount()) >= 0) {
                     return true;
                 }
             }
@@ -107,7 +109,7 @@ public class service {
         return false;
     }
 
-    public String convertTDataTransactionListTostring() {
+    public static String convertTDataTransactionListTostring() {
         StringBuilder result = new StringBuilder();
         for (Transaction transaction : transactionList) {
             result.append(transaction.toString()).append("\n");
@@ -115,8 +117,9 @@ public class service {
         return result.toString();
     }
 
-    public void finalPayments() {
+    public static void finalPayments() {
         Payment debtorpayment = datadebtor();
+        assert debtorpayment != null;
         String debtorinventorynumber = debtorpayment.getInventoryNumber();
 
         for (Payment payment : paymentList) {
@@ -127,7 +130,7 @@ public class service {
 
     }
 
-    public void update(Payment payment) {
+    public static void update(Payment payment) {
         for (Inventory inventory : inventoryList) {
             if (payment.getInventoryNumber().equals(inventory.getinventoryNumber())) {
 
@@ -142,7 +145,7 @@ public class service {
         }
     }
 
-    public void createtransaction(String debtorinventorynumber, Payment destination) {
+    public static void createtransaction(String debtorinventorynumber, Payment destination) {
         if (!destination.getisDebtor()) {
             Transaction transaction = new Transaction();
             transaction.setDebtorInventoryNumber(debtorinventorynumber);

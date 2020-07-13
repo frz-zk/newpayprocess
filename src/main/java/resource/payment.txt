@@ -1,5 +1,5 @@
-creditor	10.100.0.1	486
-creditor	10.100.0.2	486
-creditor	10.100.0.3	486
-debtor	10.100.0.4	1458
+creditor	10.100.0.1	717
+creditor	10.100.0.2	717
+creditor	10.100.0.3	717
+debtor	10.100.0.4	2151
 

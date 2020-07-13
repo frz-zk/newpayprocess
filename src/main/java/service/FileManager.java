@@ -21,12 +21,12 @@ public class FileManager {
         file.getParentFile().mkdirs();
     }
 
-    public static void write(String text, String path) throws IOException {
-        List<String> contents = Collections.singletonList(text);
-        Files.write(Paths.get(path), contents,
-                StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE);
-    }
+//    public static void write(String text, String path) throws IOException {
+//        List<String> contents = Collections.singletonList(text);
+//        Files.write(Paths.get(path), contents,
+//                StandardCharsets.UTF_8,
+//                StandardOpenOption.CREATE);
+//    }
 
 
 }
