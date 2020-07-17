@@ -3,24 +3,39 @@ package service;
 import DTO.Inventory;
 import DTO.Payment;
 import DTO.Transaction;
+import mythread.createtransaction;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Service {
     public Service() {
 
     }
 
+    static mythread.Mythread payments = new mythread.Mythread();
+    static ExecutorService executorService = Executors.newCachedThreadPool();
+    static ExecutorService executorrService = Executors.newCachedThreadPool();
+
     public static List<Payment> paymentList = new ArrayList<>();
+
+    public static createtransaction threadtarnsaction = new createtransaction();
+
     public static List<Inventory> inventoryList = new ArrayList<>();
     public static List<Transaction> transactionList = new ArrayList<>();
 
+
+    public static void checkeExistencefile(String path) {
+        if (!Files.exists(Paths.get(path))) {
+            FileManager.create(path);
+        }
+    }
 
     public static void createDataPayment() {
         BigDecimal total = new BigDecimal(0);
@@ -53,21 +68,14 @@ public class Service {
         return result.toString();
     }
 
-    public static void checkeExistencefile(String path) {
-        if (!Files.exists(Paths.get(path))) {
-            create(path);
-        }
-    }
-
-
     public static void createDatainvantory() {
         BigDecimal total = new BigDecimal(0);
         int amount = (int) (Math.random() * 1000);
 
 
         for (int i = 1; i <= 3; i++) {
-            Inventory inventory;
-            inventory = new Inventory();
+            Inventory inventory = new Inventory();
+
             inventory.setAmount(BigDecimal.valueOf(amount));
             total = total.add(inventory.getAmount());
             String deposit = "10.100.0." + i;
@@ -112,6 +120,7 @@ public class Service {
 
     public static String convertTDataTransactionListTostring() {
         StringBuilder result = new StringBuilder();
+
         for (Transaction transaction : transactionList) {
             result.append(transaction.toString()).append("\n");
         }
@@ -123,45 +132,16 @@ public class Service {
         assert debtorpayment != null;
         String debtorinventorynumber = debtorpayment.getInventoryNumber();
 
-        for (Payment payment : paymentList) {
-            update(payment);
-            createtransaction(debtorinventorynumber, payment);
-        }
-
+        payments.paymentList(paymentList);
+        executorService.execute(payments);
+        threadtarnsaction.paymentList(paymentList);
+        threadtarnsaction.setdebtorinventorynumber(debtorinventorynumber);
+        executorrService.execute(threadtarnsaction);
+        executorService.shutdown();
+        executorrService.shutdown();
 
     }
 
-    public static void update(Payment payment) {
-        for (Inventory inventory : inventoryList) {
-            if (payment.getInventoryNumber().equals(inventory.getinventoryNumber())) {
-
-                if (!payment.getisDebtor()) {
-                    inventory.setAmount(payment.getAmount().add(inventory.getAmount()));
-                } else {
-                    inventory.setAmount(payment.getAmount().subtract(inventory.getAmount()));
-                }
-                break;
-            }
-
-        }
-    }
-
-    public static void createtransaction(String debtorinventorynumber, Payment destination) {
-        if (!destination.getisDebtor()) {
-            Transaction transaction = new Transaction();
-            transaction.setDebtorInventoryNumber(debtorinventorynumber);
-            transaction.setAmount(destination.getAmount());
-            String CreditorInventoryNumber = destination.getInventoryNumber();
-            transaction.setCreditorInventoryNumber(CreditorInventoryNumber);
-            transactionList.add(transaction);
-
-        }
-    }
-
-    public static void create(String path) {
-        File file = new File(path);
-        file.getParentFile().mkdirs();
-    }
 }
 
 

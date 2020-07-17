@@ -33,5 +33,7 @@ public class Inventory {
     public void setinventoryNumber(String inventoryNumber) {
         this.inventoryNumber = inventoryNumber;
     }
+
+
 }
 
