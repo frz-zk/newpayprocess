@@ -1,43 +1,33 @@
 package main;
 
 import myException.myexceptio;
+import org.apache.log4j.BasicConfigurator;
 import service.FileManager;
+
 
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Leveogger;
 import java.util.logging.SimpleFormatter;
+import org.apache.log4j.Logger;
 
+import static java.util.logging.Level.ALL;
 import static service.Service.*;
 
 
 public class process {
 
-    static Logger logger = Logger.getLogger("loggerPay");
-
+    static Logger logger = Logger.getLogger(process.class.getName());
     public static void main(String[] args) throws Exception {
-
-        FileHandler handlerfile;
-        handlerfile = new FileHandler("src\\main\\java\\resource\\filehandler.txt");
-
-        SimpleFormatter formatter = new SimpleFormatter();
-        handlerfile.setFormatter(formatter);
-        logger.setLevel(Level.ALL);
-        logger.addHandler(handlerfile);
-        logger.entering("Paymentpr", "main");
+        BasicConfigurator.configure();
+        logger.setLevel(org.apache.log4j.Level.ALL);
 
         String inventorypath = "src\\main\\java\\resource\\inventory.txt";
         String paymentpath = "src\\main\\java\\resource\\payment.txt";
 
-        checkeExistencefile(paymentpath);
-        createDataPayment();
-        String detapayment = convertDataPaymentTostring();
-        FileManager.write(detapayment, paymentpath);
+        FileManager.write(createDataPayment(), paymentpath);
 
-        checkeExistencefile(inventorypath);
-        createDatainvantory();
-        String detainventory = convertDataInventorytTostring();
-        FileManager.write(detainventory, inventorypath);
+        FileManager.write(createDatainvantory(), inventorypath);
 
 
         if (!checkAccountInventorydebtor()) {
@@ -45,11 +35,8 @@ public class process {
         }
 
         finalPayments();
-
-
+        logger.info("Exiting the program");
     }
-
-
 }
 
 

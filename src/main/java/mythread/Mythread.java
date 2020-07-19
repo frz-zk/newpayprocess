@@ -3,33 +3,27 @@ package mythread;
 import DTO.Inventory;
 import DTO.Payment;
 
-import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
 
+import static service.Service.createtransaction;
 import static service.Service.inventoryList;
 
 
 public class Mythread implements Runnable {
 
-    Payment payment = new Payment();
-    List<Payment> paymentList = new ArrayList<>();
+    private final String debtorinventorynumber1;
+    List<Payment> paymentList;
 
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
-
-    public void paymentList(List<Payment> paymentList) {
+    public Mythread(List<Payment> paymentList, String debtorinventorynumber1) {
         this.paymentList = paymentList;
+        this.debtorinventorynumber1 = debtorinventorynumber1;
 
     }
+
 
     @Override
     public void run() {
 
-
-//    public static void update(Payment payment) {
         for (Payment payment : paymentList) {
 
             for (Inventory inventory : inventoryList) {
@@ -44,8 +38,10 @@ public class Mythread implements Runnable {
                 }
 
             }
+            createtransaction(debtorinventorynumber1, payment);
 
         }
+
     }
 }
 

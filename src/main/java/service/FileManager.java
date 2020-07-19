@@ -1,6 +1,5 @@
 package service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,9 +18,6 @@ public class FileManager {
 
     }
 
-    public static void create(String path) {
-        File file = new File(path);
-        file.getParentFile().mkdirs();
-    }
+
 }
 
