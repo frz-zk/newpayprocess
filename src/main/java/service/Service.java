@@ -3,7 +3,7 @@ package service;
 import DTO.Inventory;
 import DTO.Payment;
 import DTO.Transaction;
-import mythread.Mythread;
+import mythread.update;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -107,15 +107,11 @@ public class Service {
         Payment debtorpayment = datadebtor();
         assert debtorpayment != null;
         String debtorinventorynumber = debtorpayment.getInventoryNumber();
-
-        Mythread mythread = new Mythread(paymentList, debtorinventorynumber);
+        String paymentfile = FileManager.Readfile("src\\main\\java\\resource\\payment.txt");
+        update mythread = new update(paymentfile,debtorinventorynumber);
         executorService.execute(mythread);
-
         executorService.shutdown();
-
-
     }
-
     public static void createtransaction(String debtorinventorynumber, Payment destination) {
         if (!destination.getisDebtor()) {
             Transaction transaction = new Transaction();
@@ -131,7 +127,6 @@ public class Service {
             }
         }
     }
-
 }
 
 

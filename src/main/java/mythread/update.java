@@ -3,27 +3,42 @@ package mythread;
 import DTO.Inventory;
 import DTO.Payment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static service.Service.createtransaction;
 import static service.Service.inventoryList;
 
 
-public class Mythread implements Runnable {
+public class update implements Runnable {
 
     private final String debtorinventorynumber1;
-    List<Payment> paymentList;
+    List<Payment> paymentList = new ArrayList<>();
+    String paymentstring;
 
-    public Mythread(List<Payment> paymentList, String debtorinventorynumber1) {
-        this.paymentList = paymentList;
+    public update(String paymentFilecontent, String debtorinventorynumber1) {
+        this.paymentstring = paymentFilecontent;
         this.debtorinventorynumber1 = debtorinventorynumber1;
+
+    }
+
+    public  void convertotlist() {
+
+        String[] paymentitemsString = paymentstring.split("\n");
+        for (String item : paymentitemsString) {
+            if (item==null||item.length()<4)
+                continue;
+            Payment payment = new Payment();
+            payment.fromTostring(item);
+            paymentList.add(payment);
+        }
 
     }
 
 
     @Override
     public void run() {
-
+        convertotlist();
         for (Payment payment : paymentList) {
 
             for (Inventory inventory : inventoryList) {

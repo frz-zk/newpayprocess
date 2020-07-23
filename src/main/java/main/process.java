@@ -2,32 +2,29 @@ package main;
 
 import myException.myexceptio;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import service.FileManager;
 
-
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-//import java.util.logging.Leveogger;
-import java.util.logging.SimpleFormatter;
-import org.apache.log4j.Logger;
-
-import static java.util.logging.Level.ALL;
 import static service.Service.*;
+
+//import java.util.logging.Leveogger;
 
 
 public class process {
 
     static Logger logger = Logger.getLogger(process.class.getName());
+
     public static void main(String[] args) throws Exception {
+       FileManager.Readfile("src\\main\\java\\resource\\payment.txt");
         BasicConfigurator.configure();
         logger.setLevel(org.apache.log4j.Level.ALL);
 
         String inventorypath = "src\\main\\java\\resource\\inventory.txt";
         String paymentpath = "src\\main\\java\\resource\\payment.txt";
-
-        FileManager.write(createDataPayment(), paymentpath);
-
-        FileManager.write(createDatainvantory(), inventorypath);
+        String DataPayment = createDataPayment();
+        FileManager.write(DataPayment, paymentpath);
+        String Datainvantory = createDatainvantory();
+        FileManager.write(Datainvantory, inventorypath);
 
 
         if (!checkAccountInventorydebtor()) {

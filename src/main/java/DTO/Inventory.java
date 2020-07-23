@@ -34,6 +34,5 @@ public class Inventory {
         this.inventoryNumber = inventoryNumber;
     }
 
-
 }
 
